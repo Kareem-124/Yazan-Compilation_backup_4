@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>StockMaster</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+
+    <!-- Vendor CSS Files -->
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/boxicons/css/boxicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/quill/quill.snow.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/quill/quill.bubble.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/remixicon/remixicon.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/simple-datatables/style.css' %}">
+
+
+    <!-- Template Main CSS File -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <style>
+        .btn-orange {
+            color: white;
+            background-color: orange;
+        }
+
+        h1,
+        h3 {
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="#" class="logo d-flex align-items-center">
+                <img src="{% static 'img/logo.png' %}" alt="">
+                <span class="d-none d-lg-block">StockMaster</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+                </li><!-- End Notification Nav -->
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow Profile">
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                </ul><!-- End Profile Dropdown Items -->
+
+                <li class="nav-item dropdown pe-3">
+
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">{{user.f_name}}</span>
+                    </a><!-- End Profile Iamge Icon -->
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>{{user.f_name}}</h6>
+                            <span>Admin</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="/dashboard/profile">
+                                <i class="bi bi-person"></i>
+                                <span>My Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'SM_app:logout_process' %}">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+                    </ul><!-- End Profile Dropdown Items -->
+                </li><!-- End Profile Nav -->
+            </ul>
+        </nav><!-- End Icons Navigation -->
+
+    </header>
+    {% if user %}
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item  ">
+                <a class="nav-link collapsed " href="/dashboard">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/dashboard/profile">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link" href="/display_products">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Add Products</span>
+                </a>
+            </li><!-- End F.A.Q Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/order_page">
+                    <i class="bi bi-card-list"></i>
+                    <span>Create Order</span>
+                </a>
+            </li><!-- End Orders Page Nav -->
+
+            <!-- Order History-->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{% url 'SM_app:display_orders_page' %}">
+                    <i class="bi bi-book"></i>
+                    <span>Order History</span>
+                </a>
+            </li>
+            <!-- End of Order History-->
+
+        </ul>
+
+    </aside><!-- End Sidebar-->
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>All Products</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                    <li class="breadcrumb-item active"><a href="/all_product">All Products</a></li>
+                </ol>
+            </nav>
+            <form action="/search" method="post" onsubmit="return validateSearch()">
+                {% csrf_token %}
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="text" name="search" id="search" class="form-control" placeholder="Search" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div><!-- End Page Title -->
+        <div class="col-12">
+            <div class="card top-selling overflow-auto">
+                <div>
+                    <table class="table table-borderless text-center table-hover" >
+                        <thead>
+                            <tr class="table-danger">
+                                <th scope="col">Product</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">Expiry Date</th>
+                                <th scope="col">Estimated QTY. Left</th>
+                                <th scope="col">Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <th scope="row">
+                                    {{ product.p_name }}
+                                </th>
+                                <td class="fw-bold">{{ product.p_barcode }}</td>
+                                <td class="fw-bold">{{ product.expire_date }}</td>
+                                <td class="fw-bold">{{ product.qty }}</td>
+                                <td class="fw-bold">{{ product.cost }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% for product in prod_search %}
+                            <tr>
+                                <th scope="row">{{ product.p_name }}</th>
+                                <td class="fw-bold">{{ product.p_barcode }}</td>
+                                <td class="fw-bold">{{ product.expire_date }}</td>
+                                <td class="fw-bold">{{ product.qty }}</td>
+                                <td class="fw-bold">{{ product.cost }}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- End PRODUCTS ABOUT TO EXPIRE -->
+        </section>
+
+    </main><!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>StockMaster</span></strong>. All Rights Reserved
+        </div>
+    </footer><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'vendor/apexcharts/apexcharts.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/chart.js/chart.umd.js' %}"></script>
+    <script src="{% static 'vendor/echarts/echarts.min.js' %}"></script>
+    <script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+    <script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+    <script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+    <script>
+        function validateSearch() {
+            var inputValue = document.getElementById("search").value;
+            if (inputValue === "") {
+                alert("Please enter a Barcode.");
+                return false;
+            }
+            if (!/^\d+$/.test(inputValue)) {
+                alert("Please enter a valid number.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <!-- Template Main JS File -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% else %}
+    <h1 class="text-danger" style="margin-top: 5rem;">Access Denied !! Please Sign in !!</h1>
+    {% endif %}
+</body>
+
+</html>
